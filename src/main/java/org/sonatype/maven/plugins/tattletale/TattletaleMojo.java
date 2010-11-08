@@ -118,6 +118,11 @@ public class TattletaleMojo
      */
     private File sourcesScan;
 
+    /**
+     * @parameter expression="${tattletale.skip}"
+     */
+    private boolean skip;
+
     public String getSources()
     {
         if ( sourcesScan == null )
@@ -153,6 +158,11 @@ public class TattletaleMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        if ( skip )
+        {
+            getLog().info( "Skipping tattletale" );
+            return;
+        }
 
         Main main = new Main();
 
