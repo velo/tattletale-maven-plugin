@@ -13,8 +13,6 @@ import org.jboss.tattletale.Main;
 /**
  * Goal that runs tattletale
  * 
- * @extendsPlugin tattletale-maven
- * @extendsGoal report
  * @author Marvin Froeder
  * @goal tattletale
  * @phase verify
@@ -46,7 +44,8 @@ public class TattletaleMojo
     /**
      * Destination directory
      * 
-     * @parameter
+     * @parameter default-value="${project.build.directory}/tattletale"
+     * @required
      */
     private File destination;
 
