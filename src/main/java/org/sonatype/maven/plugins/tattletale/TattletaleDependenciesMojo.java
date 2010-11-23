@@ -12,7 +12,6 @@ import org.apache.maven.project.MavenProject;
  * @goal tattletale-dependencies
  * @phase verify
  * @requiresDependencyResolution compile+runtime
- * @requiresDependencyCollection
  */
 public class TattletaleDependenciesMojo
     extends TattletaleMojo
