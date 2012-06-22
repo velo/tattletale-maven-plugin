@@ -2,20 +2,40 @@ package org.sonatype.maven.plugins.tattletale;
 
 import java.io.File;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.maven.artifact.Artifact;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.DefaultDependencyResolutionRequest;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectDependenciesResolver;
+import org.sonatype.aether.graph.Dependency;
+import org.sonatype.aether.util.filter.ScopeDependencyFilter;
 
 /**
- * @author Marvin Froeder
+ * @author Marvin Froeder < marvin at marvinformatics.com >
  * @goal tattletale-dependencies
  * @phase verify
- * @requiresDependencyResolution compile+runtime
  */
 public class TattletaleDependenciesMojo
     extends TattletaleMojo
 {
+
+    /**
+     *  @component 
+     */
+    private ProjectDependenciesResolver dependencyResolver;
+
+    /**
+     * The maven session.
+     * 
+     * @parameter expression="${session}"
+     * @required
+     * @readonly
+     */
+    private MavenSession session;
 
     /**
      * The maven project.
@@ -26,15 +46,33 @@ public class TattletaleDependenciesMojo
      */
     protected MavenProject project;
 
+    /**
+     * @parameter 
+     */
+    private List<String> scopes;
+
     @Override
     public String getSources()
     {
-        Set<Artifact> artifacts = project.getArtifacts();
+        DefaultDependencyResolutionRequest resolution = new DefaultDependencyResolutionRequest( project, session.getRepositorySession() );
+        resolution.setResolutionFilter( new ScopeDependencyFilter( scopes, null ) );
+        DependencyResolutionResult resolutionResult;
+        try
+        {
+            resolutionResult = dependencyResolver.resolve( resolution );
+        }
+        catch ( DependencyResolutionException e )
+        {
+            getLog().error( "Unable to read project dependencies", e );
+            return "";
+        }
+
+        List<Dependency> dependencies = resolutionResult.getResolvedDependencies();
 
         Set<File> directories = new LinkedHashSet<File>();
-        for ( Artifact artifact : artifacts )
+        for ( Dependency dep : dependencies )
         {
-            directories.add( artifact.getFile().getAbsoluteFile().getParentFile() );
+            directories.add( dep.getArtifact().getFile().getAbsoluteFile().getParentFile() );
         }
 
         final StringBuilder source = new StringBuilder();
