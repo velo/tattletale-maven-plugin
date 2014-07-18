@@ -1,4 +1,4 @@
-package org.sonatype.maven.plugins.tattletale;
+package com.marvinformatics.tattletale;
 
 import java.io.File;
 import java.util.LinkedHashSet;
