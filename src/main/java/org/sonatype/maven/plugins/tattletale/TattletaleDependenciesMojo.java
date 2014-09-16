@@ -2,6 +2,8 @@ package org.sonatype.maven.plugins.tattletale;
 
 import java.io.File;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -29,13 +31,16 @@ public class TattletaleDependenciesMojo
     @Override
     public String getSources()
     {
-        Set<Artifact> artifacts = project.getArtifacts();
+    	Map<String, Artifact> artifacts = project.getArtifactMap();
 
-        Set<File> directories = new LinkedHashSet<File>();
-        for ( Artifact artifact : artifacts )
-        {
-            directories.add( artifact.getFile().getAbsoluteFile().getParentFile() );
-        }
+		Set<File> directories = new LinkedHashSet<File>();
+		for (Entry<String, Artifact> entry : artifacts.entrySet())
+		{
+			File file = entry.getValue().getFile().getAbsoluteFile();
+			if (!entry.getValue().isSnapshot())
+				file = file.getParentFile();
+			directories.add( file );
+		}
 
         final StringBuilder source = new StringBuilder();
         for ( File dir : directories )
