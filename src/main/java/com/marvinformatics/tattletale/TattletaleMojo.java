@@ -7,119 +7,109 @@ import java.util.Set;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.jboss.tattletale.Main;
 
 /**
- * Goal that runs tattletale
+ * Goal that runs tattletale against a given directory
  * 
- * @author Marvin Froeder
- * @goal tattletale
- * @phase verify
+ * @author Marvin Froeder < marvin at marvinformatics.com >
  */
+@Mojo( name = "tattletale", defaultPhase = LifecyclePhase.VERIFY )
 public class TattletaleMojo
     extends AbstractMojo
 {
     /**
      * Blacklisted
-     * 
-     * @parameter
      */
+    @Parameter
     private String[] blacklisted;
 
     /**
      * Class loader structure
-     * 
-     * @parameter
      */
+    @Parameter
     private String classloaderStructure;
 
     /**
      * Configuration
-     * 
-     * @parameter
      */
+    @Parameter
     private File configuration;
 
     /**
      * Destination directory
-     * 
-     * @parameter default-value="${project.build.directory}/tattletale"
-     * @required
      */
+    @Parameter( defaultValue = "${project.build.directory}/tattletale", required = true )
     private File destination;
 
     /**
      * Excludes
-     * 
-     * @parameter
      */
+    @Parameter
     private String[] excludes;
 
     /**
      * Fail on error
-     * 
-     * @parameter
      */
+    @Parameter( defaultValue = "true" )
     private boolean failOnError;
 
     /**
      * Fail on info
-     * 
-     * @parameter
      */
+    @Parameter( defaultValue = "false" )
     private boolean failOnInfo;
 
     /**
      * Fail on warning
-     * 
-     * @parameter
      */
+    @Parameter( defaultValue = "true" )
     private boolean failOnWarn;
 
     /**
      * Filter
-     * 
-     * @parameter
      */
+    @Parameter
     private File filter;
 
     /**
      * Profiles
-     * 
-     * @parameter
      */
+    @Parameter
     private String[] profiles;
 
     /**
      * Reports
-     * 
-     * @parameter
      */
+    @Parameter
     private String[] reports;
 
     /**
      * Scan
-     * 
-     * @parameter
      */
+    @Parameter
     private String scan;
 
     /**
      * Source directory
-     * 
-     * @parameter
      */
+    @Parameter
     private File source;
 
     /**
-     * @parameter
+     * A source directory that will be scanned for all jars
      */
+    @Parameter
     private File sourcesScan;
 
     /**
-     * @parameter expression="${tattletale.skip}"
+     * Whenever should avoid this plugin execution
      */
+    @Parameter( defaultValue = "false", property = "tattletale.skip" )
     private boolean skip;
 
     public String getSources()

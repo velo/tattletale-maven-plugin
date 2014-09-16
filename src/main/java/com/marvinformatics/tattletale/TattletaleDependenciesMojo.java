@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.DefaultDependencyResolutionRequest;
 import org.apache.maven.project.DependencyResolutionException;
 import org.apache.maven.project.DependencyResolutionResult;
@@ -15,10 +18,11 @@ import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.util.filter.ScopeDependencyFilter;
 
 /**
+ * Goal that runs tattletale against project dependencies
+ * 
  * @author Marvin Froeder < marvin at marvinformatics.com >
- * @goal tattletale-dependencies
- * @phase verify
  */
+@Mojo(name="tattletale-dependencies", defaultPhase=LifecyclePhase.VERIFY, requiresDependencyCollection=ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyResolution=ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class TattletaleDependenciesMojo
     extends TattletaleMojo
 {
